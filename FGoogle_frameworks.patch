@@ -1,0 +1,38 @@
+diff --git a/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java b/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java
+index 3409c29d3..24e44771f 100644
+--- a/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java
++++ b/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java
+@@ -309,6 +309,16 @@ public class ExternalStorageProvider extends FileSystemProvider {
+             return false;
+         }
+ 
++        // Check custom settings
++        boolean showAll = Settings.System.getInt(
++            getContext().getContentResolver(),
++            "storage_show_all",
++            0
++        ) == 1;
++        if (showAll) {
++            return false;
++        }
++
+         final String path = getPathFromDocId(documentId);
+         return PATTERN_RESTRICTED_ANDROID_SUBTREES.matcher(path).matches();
+     }
+@@ -338,6 +348,16 @@ public class ExternalStorageProvider extends FileSystemProvider {
+             return false;
+         }
+ 
++        // Check custom settings
++        boolean noStorageRestrict = Settings.System.getInt(
++            getContext().getContentResolver(),
++            "no_storage_restrict",
++            0
++        ) == 1;
++        if (noStorageRestrict) {
++            return false;
++        }
++
+         // Get canonical(!) path. Note that this path will have neither leading nor training "/".
+         // This the root's path will be just an empty string.
+         final String path = getPathFromDocId(documentId);
